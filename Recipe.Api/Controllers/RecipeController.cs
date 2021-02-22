@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -41,8 +42,10 @@ namespace Recipe.Api.Controllers
             await DatabaseContext.Database.BeginTransactionAsync();
             if (recipe.Id == 0) {
                 DatabaseContext.Add(recipe); 
-            } else {
-                DatabaseContext.Entry(recipe).State = EntityState.Modified;
+            } else
+            {
+                recipe.DeleteRemovedRelationships(DatabaseContext);
+                DatabaseContext.Recipes.Update(recipe);
             }
             await DatabaseContext.SaveChangesAsync();
             DatabaseContext.Database.CommitTransaction();
