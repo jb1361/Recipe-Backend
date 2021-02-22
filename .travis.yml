@@ -1,0 +1,27 @@
+language: csharp
+mono: none
+sudo: required
+dist: xenial
+dotnet: 3.1.101
+addons:
+  ssh_known_hosts:
+    - 192.64.115.227
+  mariadb: '10.3'
+before_script:
+    - echo -e "Host github.com\n\tHostName github.com\n\tUser git\n\tIdentityFile ~/.ssh/id_rsa\n" >> ~/.ssh/config
+script:
+    - dotnet restore
+    - dotnet build CsgoHoldem.Api/ || exit 1   
+    - dotnet build CsgoHoldem.HoldemServer/ || exit 1
+    - dotnet test CsgoHoldem.Tests/ || exit 1
+deploy:
+  - provider: script
+    skip_cleanup: true
+    script: dotnet publish -c Debug --output ./api/ ./CsgoHoldem.Api/ || exit 1 && dotnet publish -c Debug --output ./holdem-server/ ./CsgoHoldem.HoldemServer/ || exit 1 && bash ./deploy-staging.sh    
+    on:
+        branch: development
+  - provider: script
+    skip_cleanup: true
+    script: dotnet publish -c Release --output ./api/ ./CsgoHoldem.Api/ || exit 1 && dotnet publish -c Debug --output ./holdem-server/ ./CsgoHoldem.HoldemServer/ || exit 1 && bash ./deploy-production.sh
+    on:
+      branch: master
