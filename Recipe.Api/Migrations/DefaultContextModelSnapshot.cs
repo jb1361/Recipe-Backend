@@ -17,6 +17,64 @@ namespace Recipe.Api.Migrations
                 .HasAnnotation("ProductVersion", "3.1.8")
                 .HasAnnotation("Relational:MaxIdentifierLength", 64);
 
+            modelBuilder.Entity("Recipe.Api.Models.DefaultContextModels.Ingredient", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    b.Property<string>("Measurement")
+                        .HasColumnType("longtext CHARACTER SET utf8mb4");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("longtext CHARACTER SET utf8mb4");
+
+                    b.Property<int?>("RecipeId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("RecipeId");
+
+                    b.ToTable("Ingredient");
+                });
+
+            modelBuilder.Entity("Recipe.Api.Models.DefaultContextModels.Instruction", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    b.Property<int?>("RecipeId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Text")
+                        .HasColumnType("longtext CHARACTER SET utf8mb4");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("RecipeId");
+
+                    b.ToTable("Instruction");
+                });
+
+            modelBuilder.Entity("Recipe.Api.Models.DefaultContextModels.Recipe", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    b.Property<string>("Comment")
+                        .HasColumnType("longtext CHARACTER SET utf8mb4");
+
+                    b.Property<string>("Title")
+                        .HasColumnType("longtext CHARACTER SET utf8mb4");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Recipe");
+                });
+
             modelBuilder.Entity("Recipe.Api.Models.DefaultContextModels.Role", b =>
                 {
                     b.Property<int>("Id")
@@ -69,6 +127,20 @@ namespace Recipe.Api.Migrations
                     b.HasIndex("RoleId");
 
                     b.ToTable("User");
+                });
+
+            modelBuilder.Entity("Recipe.Api.Models.DefaultContextModels.Ingredient", b =>
+                {
+                    b.HasOne("Recipe.Api.Models.DefaultContextModels.Recipe", "Recipe")
+                        .WithMany("Ingredients")
+                        .HasForeignKey("RecipeId");
+                });
+
+            modelBuilder.Entity("Recipe.Api.Models.DefaultContextModels.Instruction", b =>
+                {
+                    b.HasOne("Recipe.Api.Models.DefaultContextModels.Recipe", "Recipe")
+                        .WithMany("Instructions")
+                        .HasForeignKey("RecipeId");
                 });
 
             modelBuilder.Entity("Recipe.Api.Models.DefaultContextModels.User", b =>

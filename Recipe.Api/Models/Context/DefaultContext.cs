@@ -7,17 +7,21 @@ using Recipe.Api.Models.Abstract;
 using Recipe.Api.Models.DefaultContextModels;
 using Recipe.Api.Util;
 
+
 namespace Recipe.Api.Models.Context {
     public class DefaultContext : DbContext {
         public DefaultContext(DbContextOptions<DefaultContext> options) : base(options) { }
         
         public DbSet<Role> Roles { get; set; }
         public DbSet<User> Users { get; set; }
+        public DbSet<Ingredient> Ingredients { get; set; }
+        public DbSet<Instruction> Instructions { get; set; }
+        public DbSet<DefaultContextModels.Recipe> Recipes { get; set; }
         
-
         protected override void OnModelCreating(ModelBuilder modelBuilder) {
             User.OnModelCreating(modelBuilder);
             Role.OnModelCreating(modelBuilder);
+            DefaultContextModels.Recipe.OnModelCreating(modelBuilder);
             modelBuilder.HandleInterfaces();
         }
         
